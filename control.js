@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    //clear text
-    clearText(resultTitles);
+    //cleaning text
+    cleaningText(resultTitles);
 
     //search
     if (searchInput.value.trim() !== '') {
@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     resultBlock.classList.add('hide');
     tabsBlock.classList.remove('hide');
 
-    //clear text
-    clearText(resultTitles);
+    //cleaning text
+    cleaningText(resultTitles);
   });
 
   const handleSearch = (value) => {
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return (item.innerHTML = item.innerHTML.replace(regExp, '<span class="selection">$1</span>'));
   };
 
-  const clearText = (html) => {
+  const cleaningText = (html) => {
     html.forEach((str) => {
       return (str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, ''));
     });

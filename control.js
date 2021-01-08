@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchForm = document.querySelector('#seacrh-form');
   const searchInput = document.querySelector('.seacrh-input');
-  const resultTitles = document.querySelectorAll('.result-item__title');
+  const resultTitle = document.querySelectorAll('.result-item__title');
+  const resultText = document.querySelectorAll('.result-item__text');
   const returnBtn = document.querySelector('#back');
 
   //blocks
@@ -13,14 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     //cleaning text
-    cleaningText(resultTitles);
+    stripTags(resultTitle);
+    stripTags(resultText);
 
     //search
     if (searchInput.value.trim() !== '') {
       handleSearch(searchInput.value.trim());
     }
 
-    //clear input
+    //cleaning input
     searchInput.value = '';
   });
 
@@ -30,33 +32,57 @@ document.addEventListener('DOMContentLoaded', () => {
     tabsBlock.classList.remove('hide');
 
     //cleaning text
-    cleaningText(resultTitles);
+    stripTags(resultTitle);
+    stripTags(resultText);
   });
 
   const handleSearch = (value) => {
-    let itemsNotFound = 0;
-    const allItems = resultTitles.length;
+    const requestText = value.toLowerCase();
+    const isNotFound = filteringByValue(resultTitle, requestText);
 
-    resultTitles.forEach((title) => {
-      const titleText = title.textContent.toLowerCase();
-      const requestText = value.toLowerCase();
+    //hidden blocks
+    tabsBlock.classList.add('hide');
+    resultBlock.classList.remove('hide');
+    notFoundBlock.classList.add('hide');
 
+    if (!isNotFound) {
+      filteringByValue(resultTitle, requestText);
+    } else {
+      handleSearchByText(requestText);
+    }
+  };
+
+  const handleSearchByText = (requestText) => {
+    const isNotFound = filteringByValue(resultText, requestText);
+
+    if (!isNotFound) {
+      filteringByValue(resultText, requestText);
+    } else {
+      tabsBlock.classList.add('hide');
       resultBlock.classList.remove('hide');
+      notFoundBlock.classList.remove('hide');
+    }
+  };
 
-      if (titleText.includes(requestText)) {
-        enteredText(requestText, title);
+  const filteringByValue = (result, value) => {
+    let itemsNotFound = 0;
+    const allItems = result.length;
 
-        //hidden blocks
-        tabsBlock.classList.add('hide');
-        notFoundBlock.classList.add('hide');
-        title.parentNode.classList.remove('hide');
+    result.forEach((item) => {
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(value)) {
+        enteredText(value, item);
+        item.parentNode.classList.remove('hide');
       } else {
         itemsNotFound++;
-        title.parentNode.classList.add('hide');
+        item.parentNode.classList.add('hide');
       }
     });
 
-    searchNotFound(itemsNotFound, allItems);
+    if (itemsNotFound === allItems) {
+      return true;
+    }
   };
 
   const enteredText = (text, item) => {
@@ -64,17 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return (item.innerHTML = item.innerHTML.replace(regExp, '<span class="selection">$1</span>'));
   };
 
-  const cleaningText = (html) => {
+  const stripTags = (html) => {
     html.forEach((str) => {
       return (str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, ''));
     });
-  };
-
-  const searchNotFound = (itemsNotFound, allItems) => {
-    if (itemsNotFound === allItems) {
-      tabsBlock.classList.add('hide');
-      resultBlock.classList.remove('hide');
-      notFoundBlock.classList.remove('hide');
-    }
   };
 });

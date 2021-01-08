@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchForm = document.querySelector('#seacrh-form');
   const searchInput = document.querySelector('.seacrh-input');
+  const returnBtn = document.querySelector('#back');
   const resultTitle = document.querySelectorAll('.result-item__title');
   const resultText = document.querySelectorAll('.result-item__text');
-  const returnBtn = document.querySelector('#back');
 
   //blocks
   const resultBlock = document.querySelector('#result');
@@ -40,10 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const requestText = value.toLowerCase();
     const isNotFound = filteringByValue(resultTitle, requestText);
 
-    //hidden blocks
     tabsBlock.classList.add('hide');
-    resultBlock.classList.remove('hide');
     notFoundBlock.classList.add('hide');
+    resultBlock.classList.remove('hide');
 
     if (!isNotFound) {
       filteringByValue(resultTitle, requestText);

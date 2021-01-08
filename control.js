@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    notFoundSearch(itemsNotFound, allItems);
+    searchNotFound(itemsNotFound, allItems);
   };
 
   const enteredText = (text, item) => {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const notFoundSearch = (itemsNotFound, allItems) => {
+  const searchNotFound = (itemsNotFound, allItems) => {
     if (itemsNotFound === allItems) {
       tabsBlock.classList.add('hide');
       resultBlock.classList.remove('hide');

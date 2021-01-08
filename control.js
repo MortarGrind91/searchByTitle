@@ -38,32 +38,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleSearch = (value) => {
     const requestText = value.toLowerCase();
-    const isNotFound = filteringByValue(resultTitle, requestText);
+    const isNotFound = filteringByRequestText(resultTitle, requestText);
 
     tabsBlock.classList.add('hide');
     notFoundBlock.classList.add('hide');
     resultBlock.classList.remove('hide');
 
-    if (!isNotFound) {
-      filteringByValue(resultTitle, requestText);
-    } else {
+    if (isNotFound) {
       handleSearchByText(requestText);
     }
   };
 
   const handleSearchByText = (requestText) => {
-    const isNotFound = filteringByValue(resultText, requestText);
+    const isNotFound = filteringByRequestText(resultText, requestText);
 
-    if (!isNotFound) {
-      filteringByValue(resultText, requestText);
-    } else {
+    if (isNotFound) {
       tabsBlock.classList.add('hide');
       resultBlock.classList.remove('hide');
       notFoundBlock.classList.remove('hide');
     }
   };
 
-  const filteringByValue = (result, value) => {
+  const filteringByRequestText = (result, value) => {
     let itemsNotFound = 0;
     const allItems = result.length;
 
@@ -71,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const itemText = item.textContent.toLowerCase();
 
       if (itemText.includes(value)) {
-        enteredText(value, item);
+        highlightEnteredText(value, item);
         item.parentNode.classList.remove('hide');
       } else {
         itemsNotFound++;
@@ -84,14 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const enteredText = (text, item) => {
+  const highlightEnteredText = (text, item) => {
     const regExp = new RegExp('(' + text + ')', 'gi');
-    return (item.innerHTML = item.innerHTML.replace(regExp, '<span class="selection">$1</span>'));
+    item.innerHTML = item.innerHTML.replace(regExp, '<span class="selection">$1</span>');
   };
 
   const stripTags = (html) => {
     html.forEach((str) => {
-      return (str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, ''));
+      str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, '');
     });
   };
 });

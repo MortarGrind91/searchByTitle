@@ -1,60 +1,80 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchForm = document.querySelector('#seacrh-form');
   const searchInput = document.querySelector('.seacrh-input');
-  const resultItem = document.querySelectorAll('.result-item__title');
-  const btnBack = document.querySelector('#back');
+  const resultTitles = document.querySelectorAll('.result-item__title');
+  const returnBtn = document.querySelector('#back');
+
+  //blocks
   const resultBlock = document.querySelector('#result');
   const tabsBlock = document.querySelector('.tabs');
   const notFoundBlock = document.querySelector('.not-found');
 
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    handleFilteredFaq(searchInput.value);
 
-    //clean input value
+    //clear text
+    clearText(resultTitles);
+
+    //search
+    if (searchInput.value.trim() !== '') {
+      handleSearch(searchInput.value.trim());
+    }
+
+    //clear input
     searchInput.value = '';
   });
 
-  btnBack.addEventListener('click', (e) => {
+  returnBtn.addEventListener('click', (e) => {
     e.preventDefault();
     resultBlock.classList.add('hide');
     tabsBlock.classList.remove('hide');
+
+    //clear text
+    clearText(resultTitles);
   });
 
-  const textSelection = (text, item) => {
-    const regExp = new RegExp('(' + text + ')', 'gi');
-    return (item.innerHTML = item.innerHTML.replace(regExp, '<u>$1</u>'));
-  };
+  const handleSearch = (value) => {
+    let itemsNotFound = 0;
+    const allItems = resultTitles.length;
 
-  const handleFilteredFaq = (value) => {
-    let count = 0;
-
-    resultItem.forEach((item, key) => {
-      const itemText = item.textContent.toLowerCase();
+    resultTitles.forEach((title) => {
+      const titleText = title.textContent.toLowerCase();
       const requestText = value.toLowerCase();
 
       resultBlock.classList.remove('hide');
-      //   notFoundBlock.classList.add('hide');
-      resultBlock.classList.add('show');
 
-      if (itemText.includes(requestText)) {
-        textSelection(requestText, item);
+      if (titleText.includes(requestText)) {
+        enteredText(requestText, title);
 
+        //hidden blocks
         tabsBlock.classList.add('hide');
-        // notFoundBlock.classList.add('hide');
-        item.parentNode.classList.remove('hide');
+        notFoundBlock.classList.add('hide');
+        title.parentNode.classList.remove('hide');
       } else {
-        count++;
-        item.parentNode.classList.add('hide');
+        itemsNotFound++;
+        title.parentNode.classList.add('hide');
       }
     });
 
-    filterNotFound(count, resultItem.length);
+    notFoundSearch(itemsNotFound, allItems);
   };
 
-  const filterNotFound = (failsCount, resultCount) => {
-    if (failsCount === resultCount) {
-      console.log('fail');
+  const enteredText = (text, item) => {
+    const regExp = new RegExp('(' + text + ')', 'gi');
+    return (item.innerHTML = item.innerHTML.replace(regExp, '<span class="selection">$1</span>'));
+  };
+
+  const clearText = (html) => {
+    html.forEach((str) => {
+      return (str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, ''));
+    });
+  };
+
+  const notFoundSearch = (itemsNotFound, allItems) => {
+    if (itemsNotFound === allItems) {
+      tabsBlock.classList.add('hide');
+      resultBlock.classList.remove('hide');
+      notFoundBlock.classList.remove('hide');
     }
   };
 });

@@ -13,16 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    //cleaning text
     stripTags(resultTitle);
     stripTags(resultText);
 
-    //search
     if (searchInput.value.trim() !== '') {
       handleSearch(searchInput.value.trim());
     }
 
-    //cleaning input
     searchInput.value = '';
   });
 
@@ -31,43 +28,41 @@ document.addEventListener('DOMContentLoaded', () => {
     resultBlock.classList.add('hide');
     tabsBlock.classList.remove('hide');
 
-    //cleaning text
     stripTags(resultTitle);
     stripTags(resultText);
   });
 
   const handleSearch = (value) => {
     const requestText = value.toLowerCase();
-    const isNotFound = filteringByRequestText(resultTitle, requestText);
+    const arrOfTextItems = [];
 
     tabsBlock.classList.add('hide');
     notFoundBlock.classList.add('hide');
     resultBlock.classList.remove('hide');
 
-    if (isNotFound) {
-      handleSearchByText(requestText);
-    }
-  };
-
-  const handleSearchByText = (requestText) => {
-    const isNotFound = filteringByRequestText(resultText, requestText);
-
-    if (isNotFound) {
-      tabsBlock.classList.add('hide');
-      resultBlock.classList.remove('hide');
-      notFoundBlock.classList.remove('hide');
-    }
-  };
-
-  const filteringByRequestText = (result, value) => {
-    let itemsNotFound = 0;
-    const allItems = result.length;
-
-    result.forEach((item) => {
+    resultTitle.forEach((item) => {
       const itemText = item.textContent.toLowerCase();
 
-      if (itemText.includes(value)) {
-        highlightEnteredText(value, item);
+      if (itemText.includes(requestText)) {
+        highlightEnteredText(requestText, item);
+        item.parentNode.classList.remove('hide');
+      } else {
+        arrOfTextItems.push(getSiblings(item));
+      }
+    });
+
+    arrOfTextItems.length && searchByText(requestText, arrOfTextItems);
+  };
+
+  const searchByText = (requestText, elem) => {
+    const allItems = resultText.length;
+    let itemsNotFound = 0;
+
+    elem.forEach((item) => {
+      const itemText = item.textContent.toLowerCase();
+
+      if (itemText.includes(requestText)) {
+        highlightEnteredText(requestText, item);
         item.parentNode.classList.remove('hide');
       } else {
         itemsNotFound++;
@@ -76,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (itemsNotFound === allItems) {
-      return true;
+      tabsBlock.classList.add('hide');
+      resultBlock.classList.remove('hide');
+      notFoundBlock.classList.remove('hide');
     }
   };
 
@@ -89,5 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
     html.forEach((str) => {
       str.innerHTML = str.innerHTML.replace(/<(.|\n)*?>/g, '');
     });
+  };
+
+  const getSiblings = (elem) => {
+    return [...elem.parentNode.children].filter((item) => item !== elem)[0];
   };
 });

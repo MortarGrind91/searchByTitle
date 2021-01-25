@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabsBlock = document.querySelector('.tabs');
   const notFoundBlock = document.querySelector('.not-found');
 
+  const questionForm = document.querySelector('#question-form');
+  const questionFormEmail = document.querySelector('.question-form__email');
+  const questionFormName = document.querySelector('.question-form__name');
+  const questionFormText = document.querySelector('.question-form__text');
+
+  const API_FEEDBACK_SERVICE = 'https://services.allo.ua/nr/feedback_service/create';
+
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -90,5 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const getSiblings = (elem) => {
     return [...elem.parentNode.children].filter((item) => item !== elem)[0];
+  };
+
+  //sending form
+  questionForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = questionFormEmail.value;
+    const name = questionFormName.value;
+    const text = questionFormText.value;
+
+    sendForm({ email, name, text });
+  });
+
+  const sendForm = async ({ email, name, text }) => {
+    const data = {
+      method: 'POST',
+      body: JSON.stringify({ client_email: email, client_name: name, client_text: text }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await fetch(API_FEEDBACK_SERVICE, data);
+
+    if (response.ok) {
+      console.log('send');
+    } else {
+      console.log('fail');
+    }
   };
 });

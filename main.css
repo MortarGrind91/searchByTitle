@@ -28,3 +28,7 @@
 .hide {
   display: none;
 }
+
+.question-form__block {
+  padding: 50px;
+}

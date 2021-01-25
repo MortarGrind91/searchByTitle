@@ -7,6 +7,29 @@
     <link rel="stylesheet" href="./main.css" />
   </head>
   <body>
+    <div class="question-form__block">
+      <form method="POST" id="question-form">
+        <input
+          placeholder="Электронная почта"
+          type="text"
+          class="question-form__email"
+          name="email"
+          required
+        />
+        <input placeholder="Имя" type="text" class="question-form__name" name="name" required />
+        <input
+          placeholder="Задайте вопос"
+          class="question-form__text"
+          type="text"
+          name="text"
+          required
+        />
+        <input type="submit" value="Отправить" />
+      </form>
+    </div>
+
+    <hr />
+
     <div class="search">
       <form action="" class="seacrh-form" id="seacrh-form">
         <input type="text" value="" placeholder="Поиск" class="seacrh-input" />
